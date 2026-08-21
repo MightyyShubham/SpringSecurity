@@ -26,8 +26,3 @@ response
 http://localhost:8080/posts/1 Get
 in Authorization -> type Bearer -> past the token that you get at login 
 
-{
-"name":"shubham123",
-"email":"Shubham123@gmail.com",
-"password":"1234321"
-}
