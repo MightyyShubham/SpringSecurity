@@ -26,8 +26,8 @@ public class AuthController {
     private final UserService userService;
     private final AuthService authService;
 
-    @Value("${deploy.env}")
-    private String deployEnv;
+    //@Value("${deploy.env}")
+    //private String deployEnv; this is to identify the production environment and based on this we willset cookie.setSecure();
     @PostMapping("/signup")
     public ResponseEntity<UserDTO> signup(@RequestBody SignUpDTO signUpDTO)
     {
