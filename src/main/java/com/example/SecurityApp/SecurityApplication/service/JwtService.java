@@ -1,0 +1,51 @@
+package com.example.SecurityApp.SecurityApplication.service;
+
+import com.example.SecurityApp.SecurityApplication.Entities.User;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+import java.util.Set;
+
+@Service
+public class JwtService {
+
+//    @Value("${jwt.secretKey}")
+    private String jwtSecretKey="asdf23dcscsdf4334gerf224g5gt2234ndfbehre";
+
+    private SecretKey getSecretKey(){
+        return Keys.hmacShaKeyFor(jwtSecretKey.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public String generateToken(User user){
+       return Jwts.builder()
+                .subject(String.valueOf(user.getId()))
+                .claim("email",user.getEmail())
+                .claim("roles", Set.of("Admin","USER"))
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis()+5000*60))
+                .signWith(getSecretKey())
+                .compact();
+    }
+
+    public long getUserIdFromToken(String token){
+        System.out.println("TOKEN = [" + token + "]");
+        System.out.println("TOKEN LENGTH = " + token.length());
+        System.out.println("HAS SPACE = " + token.contains(" "));
+        System.out.println("HAS NEWLINE = " + token.contains("\n"));
+        System.out.println("HAS TAB = " + token.contains("\t"));
+        Claims claims = Jwts.parser()
+                .verifyWith(getSecretKey())
+                .build()
+                //.parseEncryptedClaims(token)
+                .parseSignedClaims(token)
+                .getPayload();
+    return Long.valueOf(claims.getSubject());
+    }
+
+}
